@@ -4,14 +4,13 @@ import {useRef, useEffect} from "react";
 
 export default function Home() {
 
-	const socketRef = useRef<WebSocket | null>(null);
+	const socketRef = useRef<WebSocket>(null);
 	const contentRef = useRef<HTMLInputElement>(null);
 	const channelIdRef = useRef<String>('0');
 
+	const messagesTableRef = useRef<HTMLTableSectionElement>(null);
+
 	useEffect(() => {
-
-		const messagesTable = document.getElementById('jsiConversation')!.getElementsByTagName('tbody')[0];
-
 		const urlParams = new URLSearchParams(window.location.search);
 		let channelId = urlParams.get('channelId');
 		
@@ -34,8 +33,6 @@ export default function Home() {
 		  return response.json();
 		})
 		.then(data => {
-		  messagesTable.innerHTML = '';
-
 		  data.forEach((message : any) => { showMessage(message);});
 		})
 		.catch(error => {
@@ -65,8 +62,9 @@ export default function Home() {
 	
 	const showMessage = (message : any) => {
 		
-		const messagesTable = document.getElementById('jsiConversation')!.getElementsByTagName('tbody')[0];
-		const row = messagesTable.insertRow();
+		if (!messagesTableRef.current) return;
+
+		const row = messagesTableRef.current?.insertRow();
 		const createdAtCell = row.insertCell();
 		const messageCell = row.insertCell();
 
@@ -100,7 +98,7 @@ export default function Home() {
   return (
 		<div>
 			<div>
-				<table id="jsiConversation" className="text-left text-sm">
+				<table className="text-left text-sm">
 					<thead className="text-xs uppercase">
 						<tr>
 							<th className="px-6 py-3">
@@ -111,7 +109,7 @@ export default function Home() {
 							</th>
 						</tr>
 					</thead>
-					<tbody id="messages"></tbody>
+					<tbody ref={messagesTableRef}></tbody>
 				</table>
 			</div>
 			<hr/>
