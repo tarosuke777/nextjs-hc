@@ -1,50 +1,38 @@
 "use client";
 
-// https://github.com/mswjs/examples/pull/101/files
-
 import { useRef, useEffect, useState } from "react";
 import SendMessage from "./components/send-message";
+import GetMessage from "./components/get-message";
+import Message from "./components/message";
 
 export default function Home() {
-  type messageFormat = {
-    channelId: string;
-    createdAt: string;
-    content: string;
-    userId: string;
-  };
-
   const socketRef = useRef<WebSocket | null>(null);
   const channelIdRef = useRef<String | null>(null);
 
-  const [messages, setMessages] = useState<messageFormat[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     let channelId = urlParams.get("channelId");
-
-    if (channelId === null) {
-      channelId = "1";
-    }
-
+    channelId = channelId ? channelId : "1";
     channelIdRef.current = channelId;
 
-    fetch(`http://localhost:8080/messages?channelId=${channelId}`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => setMessages(data))
-      .catch((error) => {
-        console.error("Error fetching messages:", error);
-        alert("メッセージの取得に失敗しました。");
-      });
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const data = await GetMessage(channelId);
+        setMessages(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
 
     const websocket = new WebSocket("ws://localhost:8080/hc-websocket?1");
     websocket.addEventListener("error", (event) => {
@@ -67,6 +55,14 @@ export default function Home() {
       websocket.removeEventListener("message", onMessage);
     };
   }, []);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
 
   return (
     <div>
