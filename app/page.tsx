@@ -28,55 +28,44 @@ export default function Home() {
 
     channelIdRef.current = channelId;
 
-    if (
-      process.env.NODE_ENV !== "development" ||
-      typeof window === "undefined"
-    ) {
-      return;
-    }
-
-    import("./mocks/browser").then(({ worker }) => {
-      worker.start().then(() => {
-        fetch(`http://localhost:8080/messages?channelId=${channelId}`, {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-          },
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-          })
-          .then((data) => setMessages(data))
-          .catch((error) => {
-            console.error("Error fetching messages:", error);
-            alert("メッセージの取得に失敗しました。");
-          });
-
-        const websocket = new WebSocket("ws://localhost:8080/hc-websocket?1");
-        websocket.addEventListener("error", (event) => {
-          console.log("WebSocket error: ", event);
-        });
-
-        socketRef.current = websocket;
-
-        const onMessage = (message: any) => {
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            JSON.parse(message.data),
-          ]);
-        };
-
-        websocket.addEventListener("message", onMessage);
-
-        return () => {
-          websocket.close();
-          websocket.removeEventListener("message", onMessage);
-        };
+    fetch(`http://localhost:8080/messages?channelId=${channelId}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => setMessages(data))
+      .catch((error) => {
+        console.error("Error fetching messages:", error);
+        alert("メッセージの取得に失敗しました。");
       });
+
+    const websocket = new WebSocket("ws://localhost:8080/hc-websocket?1");
+    websocket.addEventListener("error", (event) => {
+      console.log("WebSocket error: ", event);
     });
+
+    socketRef.current = websocket;
+
+    const onMessage = (message: any) => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        JSON.parse(message.data),
+      ]);
+    };
+
+    websocket.addEventListener("message", onMessage);
+
+    return () => {
+      websocket.close();
+      websocket.removeEventListener("message", onMessage);
+    };
   }, []);
 
   return (

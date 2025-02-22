@@ -3,7 +3,7 @@ import { http, HttpResponse, ws } from "msw";
 // const chat = ws.link("ws://localhost:8080");
 
 export const handlers = [
-  http.get("http://localhost:8080/messages?channelId=1", () => {
+  http.get("http://localhost:8080/messages", () => {
     return HttpResponse.json([
       {
         channelId: "1",
