@@ -14,7 +14,6 @@ export default function Home() {
   };
 
   const socketRef = useRef<WebSocket | null>(null);
-  const contentRef = useRef<HTMLInputElement | null>(null);
   const channelIdRef = useRef<String | null>(null);
 
   const [messages, setMessages] = useState<messageFormat[]>([]);
