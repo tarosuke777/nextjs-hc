@@ -1,16 +1,24 @@
 'use client'
 
-import {useRef, useEffect} from "react";
+import {useRef, useEffect, useState} from "react";
 
 export default function Home() {
 
-	const socketRef = useRef<WebSocket>(null);
-	const contentRef = useRef<HTMLInputElement>(null);
-	const channelIdRef = useRef<String>('0');
+	type messageFormat = {
+		channelId: string,
+		createdAt: string,
+		content: string,
+		userId: string
+	};
 
-	const messagesTableRef = useRef<HTMLTableSectionElement>(null);
+	const socketRef = useRef<WebSocket | null>(null);
+	const contentRef = useRef<HTMLInputElement | null>(null);
+	const channelIdRef = useRef<String | null>(null);
+
+	const [messages, setMessages] = useState<messageFormat[]>([]);
 
 	useEffect(() => {
+
 		const urlParams = new URLSearchParams(window.location.search);
 		let channelId = urlParams.get('channelId');
 		
@@ -20,64 +28,52 @@ export default function Home() {
 		
 		channelIdRef.current = channelId;
 
-		fetch(`http://localhost:8080/messages?channelId=${channelId}`, {
-		  method: 'GET',
-		  headers: {
-		    'Accept': 'application/json'
-		  }
-		})
-		.then(response => {
-		  if (!response.ok) {
-		    throw new Error(`HTTP error! status: ${response.status}`);
-		  }
-		  return response.json();
-		})
-		.then(data => {
-		  data.forEach((message : any) => { showMessage(message);});
-		})
-		.catch(error => {
-		  console.error('Error fetching messages:', error);
-		  alert('メッセージの取得に失敗しました。');
-		});
-		
-    
-		const websocket = new WebSocket('ws://localhost:8080/hc-websocket?1');
-		websocket.addEventListener("error", (event) => {
-		console.log("WebSocket error: ", event);
-		});
-
-		socketRef.current = websocket;
-
-		const onMessage = (message : any) => {
-			  showMessage(JSON.parse(message.data));
-		};
-		
-		websocket.addEventListener('message', onMessage);
-		
-		return () => {
-		  websocket.close()
-		  websocket.removeEventListener('message', onMessage);
+		if (process.env.NODE_ENV !== 'development' || typeof window === 'undefined') {
+			return;
 		}
+		
+		import("./mocks/browser").then(({worker}) => {
+			worker.start().then(()=>{
+				fetch(`http://localhost:8080/messages?channelId=${channelId}`, {
+					method: 'GET',
+					headers: {
+						'Accept': 'application/json'
+					}
+				})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error(`HTTP error! status: ${response.status}`);
+					}
+					return response.json();
+				})
+				.then(data => setMessages(data))
+				.catch(error => {
+					console.error('Error fetching messages:', error);
+					alert('メッセージの取得に失敗しました。');
+				});
+
+				const websocket = new WebSocket('ws://localhost:8080/hc-websocket?1');
+				websocket.addEventListener("error", (event) => {
+					console.log("WebSocket error: ", event);
+				});
+		
+				socketRef.current = websocket;
+		
+				const onMessage = (message : any) => {
+					  setMessages(prevMessages => [...prevMessages, JSON.parse(message.data)]);
+				};
+				
+				websocket.addEventListener('message', onMessage);
+				
+				return () => {
+				  websocket.close()
+				  websocket.removeEventListener('message', onMessage);
+				}
+
+			});
+		});
 	}, []);
 	
-	const showMessage = (message : any) => {
-		
-		if (!messagesTableRef.current) return;
-
-		const row = messagesTableRef.current?.insertRow();
-		const createdAtCell = row.insertCell();
-		const messageCell = row.insertCell();
-
-		createdAtCell.textContent = message.createdAt;
-		messageCell.textContent = message.content;
-		createdAtCell.className = 'px-6 py-4';
-		messageCell.className = 'px-6 py-4';
-
-	}
-	
-	// https://flowbite.com/docs/forms/input-field/
-	// https://tailwindcss.com/docs/background-color
-
 	const sendName = () => {
 
 		if (!contentRef.current) return;
@@ -109,7 +105,14 @@ export default function Home() {
 							</th>
 						</tr>
 					</thead>
-					<tbody ref={messagesTableRef}></tbody>
+					<tbody>
+						{messages.map((message, index) => (
+							<tr key={index}>
+								<td className="px-6 py-4">{message.createdAt}</td>
+								<td className="px-6 py-4">{message.content}</td>
+							</tr>
+						))}
+					</tbody>
 				</table>
 			</div>
 			<hr/>
