@@ -1,3 +1,4 @@
+import { channel } from "diagnostics_channel";
 import { http, HttpResponse, ws } from "msw";
 
 // const chat = ws.link("ws://localhost:8080");
@@ -28,10 +29,22 @@ export const handlers = [
         const isoString = now.toISOString();
         const formattedDate = isoString.replace(
           "Z",
-          now.getMilliseconds().toString().padEnd(9, "0")
+          now.getMilliseconds().toString().padEnd(6, "0")
         );
         data.createdAt = formattedDate;
         client.send(JSON.stringify(data));
       });
     }),
+  http.get("http://localhost:8080/channels", () => {
+    return HttpResponse.json([
+      {
+        channelId: "1",
+        channelName: "zatsu",
+      },
+      {
+        channelId: "2",
+        channelName: "memo",
+      },
+    ]);
+  }),
 ];
