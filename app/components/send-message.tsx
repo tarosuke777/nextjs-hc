@@ -30,8 +30,8 @@ export default function SendMessage({
   };
 
   return (
-    <div className="grid grid-cols-2 gap-4 my-5 ml-3">
-      <div>
+    <div className="flex gap-4 my-5 ml-3">
+      <div className="w-1/3">
         <input
           type="text"
           ref={contentRef}
