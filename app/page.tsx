@@ -10,7 +10,7 @@ import Link from "next/link";
 
 export default function Home() {
   const socketRef = useRef<WebSocket | null>(null);
-  const channelIdRef = useRef<String | null>(null);
+  const channelIdRef = useRef<string | null>(null);
 
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -30,8 +30,12 @@ export default function Home() {
         setLoading(true);
         const data = await GetMessage(channelId);
         setMessages(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       } finally {
         setLoading(false);
       }
@@ -43,8 +47,12 @@ export default function Home() {
       try {
         const data = await GetChannel();
         setChannels(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       }
     };
 
@@ -59,7 +67,7 @@ export default function Home() {
 
     socketRef.current = websocket;
 
-    const onMessage = (message: any) => {
+    const onMessage = (message: MessageEvent) => {
       setMessages((prevMessages) => [
         ...prevMessages,
         JSON.parse(message.data),
