@@ -1,7 +1,7 @@
 import Message from "./message";
 
 export default async function GetMessage(
-  channelId: String
+  channelId: string
 ): Promise<Message[]> {
   const res = await fetch(
     `http://localhost:8080/messages?channelId=${channelId}`

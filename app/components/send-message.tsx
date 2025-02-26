@@ -4,7 +4,7 @@ import { useRef, RefObject } from "react";
 
 interface SendMessageProps {
   socketRef: RefObject<WebSocket | null>;
-  channelIdRef: RefObject<String | null>;
+  channelIdRef: RefObject<string | null>;
 }
 
 export default function SendMessage({

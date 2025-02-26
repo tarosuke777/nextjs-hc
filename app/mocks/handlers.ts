@@ -1,4 +1,3 @@
-import { channel } from "diagnostics_channel";
 import { http, HttpResponse, ws } from "msw";
 
 // const chat = ws.link("ws://localhost:8080");
@@ -24,7 +23,7 @@ export const handlers = [
     .link("ws://localhost:8080/hc-websocket?1")
     .addEventListener("connection", ({ client }) => {
       client.addEventListener("message", (event) => {
-        let data = JSON.parse(event.data as string);
+        const data = JSON.parse(event.data as string);
         const now = new Date();
         const isoString = now.toISOString();
         const formattedDate = isoString.replace(
