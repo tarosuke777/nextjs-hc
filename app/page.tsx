@@ -59,7 +59,7 @@ export default function Home() {
     fetchChannels();
 
     const websocket = new WebSocket(
-      `ws://localhost:8080/hc-websocket?channelId=${channelId}`
+      `ws://localhost:8080/hc-websocket?${channelId}`
     );
     websocket.addEventListener("error", (event) => {
       console.log("WebSocket error: ", event);
