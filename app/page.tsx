@@ -7,17 +7,19 @@ import Message from "./components/message";
 import Channel from "./components/channel";
 import GetChannel from "./components/get-channel";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export default function Home() {
   const socketRef = useRef<WebSocket | null>(null);
   const channelIdRef = useRef<string | null>(null);
 
   const [messages, setMessages] = useState<Message[]>([]);
-
   const [channels, setChannels] = useState<Channel[]>([]);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -80,7 +82,7 @@ export default function Home() {
       websocket.close();
       websocket.removeEventListener("message", onMessage);
     };
-  }, []);
+  }, [pathname, searchParams]);
 
   if (loading) {
     return <p>Loading...</p>;
