@@ -12,6 +12,8 @@ import { usePathname, useSearchParams } from "next/navigation";
 export default function Home() {
   const socketRef = useRef<WebSocket | null>(null);
   const channelIdRef = useRef<string | null>(null);
+  // メッセージリストのスクロール位置を管理するためのref
+  const messagesEndRef = useRef<HTMLTableRowElement | null>(null);
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [channels, setChannels] = useState<Channel[]>([]);
@@ -21,9 +23,11 @@ export default function Home() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  // 初期メッセージとチャンネルの読み込み、WebSocket接続の確立
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     let channelId = urlParams.get("channelId");
+    // channelIdがなければデフォルトで"1"を設定
     channelId = channelId ? channelId : "1";
     channelIdRef.current = channelId;
 
@@ -43,8 +47,6 @@ export default function Home() {
       }
     };
 
-    fetchMessages();
-
     const fetchChannels = async () => {
       try {
         const data = await GetChannel();
@@ -58,6 +60,8 @@ export default function Home() {
       }
     };
 
+    // メッセージとチャンネルの取得
+    fetchMessages();
     fetchChannels();
 
     const websocket = new WebSocket(
@@ -78,11 +82,20 @@ export default function Home() {
 
     websocket.addEventListener("message", onMessage);
 
+    // クリーンアップ関数: コンポーネントのアンマウント時にWebSocketを閉じる
     return () => {
       websocket.close();
       websocket.removeEventListener("message", onMessage);
     };
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams]); // pathnameまたはsearchParamsが変更されたときに再実行
+
+  // メッセージが追加されるたびに、リストの最下部にスクロール
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      // スムーズなスクロールアニメーション
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]); // messagesステートが変更されるたびに実行
 
   if (loading) {
     return <p>Loading...</p>;
@@ -93,40 +106,58 @@ export default function Home() {
   }
 
   return (
-    <div className="flex">
-      <aside className="w-40">
-        Channel
+    <div className="flex h-screen">
+      {/* チャンネルサイドバー */}
+      <aside className="w-40 p-4 bg-gray-800 text-white flex-shrink-0">
+        <h2 className="text-lg font-bold mb-4">Channel</h2>
         <ul>
-          {channels.map((channel, index) => (
-            <li key={index}>
-              <Link href={`/?channelId=${channel.channelId}`}>
+          {channels.map((channel) => (
+            <li key={channel.channelId} className="mb-2">
+              <Link
+                href={`/?channelId=${channel.channelId}`}
+                className="text-blue-300 hover:text-blue-100"
+              >
                 {channel.channelName}
               </Link>
             </li>
           ))}
         </ul>
       </aside>
-      <main className="w-full">
-        <div>
-          <table className="text-left text-sm">
-            <thead className="text-xs uppercase">
+      {/* メインコンテンツエリア */}
+      <main className="flex-1 flex flex-col bg-gray-900 text-white">
+        {/* メッセージ表示領域 */}
+        <div className="flex-1 overflow-y-auto p-4">
+          <table className="text-left text-sm w-full table-auto">
+            <thead className="text-xs uppercase bg-gray-700 sticky top-0 z-10">
               <tr>
-                <th className="px-6 py-3">Time</th>
-                <th className="px-6 py-3">Message</th>
+                <th className="px-6 py-3 w-1/4">Time</th>
+                <th className="px-6 py-3 w-3/4">Message</th>
               </tr>
             </thead>
             <tbody>
               {messages.map((message, index) => (
-                <tr key={index}>
-                  <td className="px-6 py-4">{message.createdAt}</td>
+                <tr
+                  key={index}
+                  className="border-b border-gray-700 hover:bg-gray-800"
+                >
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {message.createdAt}
+                  </td>
                   <td className="px-6 py-4">{message.content}</td>
                 </tr>
               ))}
+              {/* スクロール位置の目印となる空のdiv */}
+              <tr ref={messagesEndRef}>
+                <td colSpan={2}></td> {/* テーブルのセルを占有 */}
+              </tr>
             </tbody>
           </table>
         </div>
-        <hr />
-        <SendMessage channelIdRef={channelIdRef} socketRef={socketRef} />
+        <hr className="border-gray-700" /> {/* 区切り線 */}
+        <div className="p-4 bg-gray-800 flex-shrink-0">
+          {/* 送信エリアは固定 */}
+          <SendMessage channelIdRef={channelIdRef} socketRef={socketRef} />
+        </div>
       </main>
     </div>
   );
