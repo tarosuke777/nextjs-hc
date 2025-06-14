@@ -111,8 +111,6 @@ export default function Home() {
     return <p>Error: {error}</p>;
   }
 
-  console.log(process.env.APP_ENV);
-
   return (
     <div className="flex h-screen">
       <aside className="w-40 p-4 bg-gray-800 text-white flex-shrink-0">

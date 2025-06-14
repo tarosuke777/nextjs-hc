@@ -31,7 +31,3 @@ docker compose down nginx
 
 docker compose up -d --build nginx-aws
 docker compose down nginx-aws
-
-https://zenn.dev/kiwichan101kg/articles/fd6a94b5edc91a
-https://zenn.dev/kazumax4395/articles/643ffc25d3f803
-https://zenn.dev/jj/articles/next-js-env-best-practice
