@@ -8,6 +8,9 @@ import Channel from "./components/channel";
 import GetChannel from "./components/get-channel";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
 export default function Home() {
   const socketRef = useRef<WebSocket | null>(null);
@@ -22,6 +25,9 @@ export default function Home() {
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
 
   // 初期メッセージとチャンネルの読み込み、WebSocket接続の確立
   useEffect(() => {
@@ -65,7 +71,7 @@ export default function Home() {
     fetchChannels();
 
     const websocket = new WebSocket(
-      `ws://localhost:18080/hc-websocket?${channelId}`
+      `ws://${process.env.API_ORIGIN}/hc-websocket?${channelId}`
     );
     websocket.addEventListener("error", (event) => {
       console.log("WebSocket error: ", event);
@@ -107,7 +113,6 @@ export default function Home() {
 
   return (
     <div className="flex h-screen">
-      {/* チャンネルサイドバー */}
       <aside className="w-40 p-4 bg-gray-800 text-white flex-shrink-0">
         <h2 className="text-lg font-bold mb-4">Channel</h2>
         <ul>
@@ -123,9 +128,7 @@ export default function Home() {
           ))}
         </ul>
       </aside>
-      {/* メインコンテンツエリア */}
       <main className="flex-1 flex flex-col bg-gray-900 text-white">
-        {/* メッセージ表示領域 */}
         <div className="flex-1 overflow-y-auto p-4">
           <table className="text-left text-sm w-full table-auto">
             <thead className="text-xs uppercase bg-gray-700 sticky top-0 z-10">
@@ -141,21 +144,22 @@ export default function Home() {
                   className="border-b border-gray-700 hover:bg-gray-800"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {message.createdAt}
+                    {dayjs
+                      .utc(message.createdAt)
+                      .local()
+                      .format("YYYY-MM-DD HH:mm:ss")}
                   </td>
                   <td className="px-6 py-4">{message.content}</td>
                 </tr>
               ))}
-              {/* スクロール位置の目印となる空のdiv */}
               <tr ref={messagesEndRef}>
-                <td colSpan={2}></td> {/* テーブルのセルを占有 */}
+                <td colSpan={2}></td>
               </tr>
             </tbody>
           </table>
         </div>
-        <hr className="border-gray-700" /> {/* 区切り線 */}
+        <hr className="border-gray-700" />
         <div className="p-4 bg-gray-800 flex-shrink-0">
-          {/* 送信エリアは固定 */}
           <SendMessage channelIdRef={channelIdRef} socketRef={socketRef} />
         </div>
       </main>

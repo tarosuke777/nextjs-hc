@@ -1,5 +1,9 @@
 # Stage1
 FROM node:21-alpine AS builder
+
+ARG APP_ENV=prod
+ENV APP_ENV=${APP_ENV}
+
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install

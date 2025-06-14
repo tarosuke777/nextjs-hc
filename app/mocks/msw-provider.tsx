@@ -4,7 +4,9 @@ import { Suspense, use } from "react";
 import { handlers } from "./handlers";
 
 const mockingEnabledPromise =
-  process.env.NODE_ENV === "development" && typeof window !== "undefined"
+  process.env.NODE_ENV === "development" &&
+  process.env.APP_ENV === "mock" &&
+  typeof window !== "undefined"
     ? import("./browser").then(async ({ worker }) => {
         await worker.start();
         worker.use(...handlers);

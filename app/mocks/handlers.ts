@@ -3,7 +3,7 @@ import { http, HttpResponse, ws } from "msw";
 // const chat = ws.link("ws://localhost:8080");
 
 export const handlers = [
-  http.get("http://localhost:18080/messages", ({ request }) => {
+  http.get(`http://${process.env.API_ORIGIN}/messages`, ({ request }) => {
     const url = new URL(request.url);
     const channelId = url.searchParams.get("channelId");
 
@@ -42,7 +42,7 @@ export const handlers = [
     }
   }),
   ws
-    .link("ws://localhost:18080/hc-websocket?1")
+    .link(`ws://${process.env.API_ORIGIN}/hc-websocket?1`)
     .addEventListener("connection", ({ client }) => {
       client.addEventListener("message", (event) => {
         const data = JSON.parse(event.data as string);
@@ -56,7 +56,7 @@ export const handlers = [
         client.send(JSON.stringify(data));
       });
     }),
-  http.get("http://localhost:18080/channels", () => {
+  http.get(`http://${process.env.API_ORIGIN}/channels`, () => {
     return HttpResponse.json([
       {
         channelId: "1",
