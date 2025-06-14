@@ -5,6 +5,19 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        APP_ENV: prod
+    ports:
+      - "11180:80"
+    restart: always
+    container_name: nextjs-hc
+
+  nginx-aws:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_ENV: aws
     ports:
       - "11180:80"
     restart: always

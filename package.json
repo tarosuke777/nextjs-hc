@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev:local": "set APP_ENV=local&&next dev --turbopack",
+    "dev:prod": "set APP_ENV=prod&&next dev --turbopack",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "dayjs": "^1.11.13",
     "next": "15.1.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
