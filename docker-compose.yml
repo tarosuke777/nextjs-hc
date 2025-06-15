@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        APP_ENV: prod
+        BACK_APP_ENV: prod
     ports:
       - "11180:80"
     restart: always
@@ -17,7 +17,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        APP_ENV: aws
+        BACK_APP_ENV: aws
     ports:
       - "11180:80"
     restart: always

@@ -1,15 +1,15 @@
 import type { NextConfig } from "next";
-import localConfig from "./config/local.json";
+import ideConfig from "./config/ide.json";
 import awsConfig from "./config/aws.json";
 import prodConfig from "./config/prod.json";
 
-const appEnv = process.env.APP_ENV || "mock";
+const backAppEnv = process.env.BACK_APP_ENV || "mock";
 
 let selectedConfig: Record<string, string>;
 
-switch (appEnv) {
-  case "local":
-    selectedConfig = localConfig;
+switch (backAppEnv) {
+  case "ide":
+    selectedConfig = ideConfig;
     break;
   case "aws":
     selectedConfig = awsConfig;
@@ -24,7 +24,7 @@ switch (appEnv) {
 
 const nextConfig: NextConfig = {
   env: {
-    APP_ENV: appEnv,
+    BACK_APP_ENV: backAppEnv,
     ...selectedConfig,
   },
   output: "export",
