@@ -16,6 +16,10 @@ npm run dev:prod
 
 npm run dev:aws
 
+## Not Node.js
+
+npx serve@latest out
+
 ## コマンド補足
 
 package.json を参照

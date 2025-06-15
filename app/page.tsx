@@ -11,6 +11,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import "dayjs/locale/ja";
 
 export default function Home() {
   const socketRef = useRef<WebSocket | null>(null);
@@ -28,6 +29,7 @@ export default function Home() {
 
   dayjs.extend(utc);
   dayjs.extend(timezone);
+  dayjs.locale("ja");
 
   // 初期メッセージとチャンネルの読み込み、WebSocket接続の確立
   useEffect(() => {
@@ -147,7 +149,7 @@ export default function Home() {
                     {dayjs
                       .utc(message.createdAt)
                       .local()
-                      .format("YYYY-MM-DD HH:mm:ss")}
+                      .format("YYYY-MM-DD (ddd) HH:mm:ss ")}
                   </td>
                   <td className="px-6 py-4">{message.content}</td>
                 </tr>
