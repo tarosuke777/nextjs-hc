@@ -6,7 +6,7 @@ npm run dev
 
 ## ローカルの開発環境
 
-npm run dev:local
+npm run dev:ide
 
 ## ローカルの Docker
 
@@ -18,7 +18,8 @@ npm run dev:aws
 
 ## Not Node.js
 
-npx serve@latest out
+npx serve@latest out -c ../serve.json
+https://github.com/vercel/serve-handler#options
 
 ## コマンド補足
 
