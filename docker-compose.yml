@@ -1,16 +1,15 @@
 version: "3.8" # Docker Compose のバージョンを指定。通常は最新の安定版でOK。
 
 services:
-  nginx:
+  hc-nginx:
     build:
       context: .
       dockerfile: Dockerfile
       args:
         BACK_APP_ENV: prod
-    ports:
-      - "11180:80"
     restart: always
-    container_name: nextjs-hc
+    networks:
+      - home_network
 
   nginx-aws:
     build:
@@ -22,3 +21,7 @@ services:
       - "11180:80"
     restart: always
     container_name: nextjs-hc
+
+networks:
+  home_network:
+    external: true
