@@ -1,0 +1,10 @@
+{
+  "rewrites": [
+    { "source": "/hc", "destination": "/" },
+    { "source": "/hc/:id", "destination": "/:id" },
+    { "source": "/hc/:id1/:id2", "destination": "/:id1/:id2" },
+    { "source": "/hc/:id1/:id2/:id3", "destination": "/:id1/:id2/:id3" },
+    { "source": "/hc/:id1/:id2/:id3/:id4", "destination": "/:id1/:id2/:id3/:id4" },
+    { "source": "/hc/:id1/:id2/:id3/:id4/:id5", "destination": "/:id1/:id2/:id3/:id4/:id5" }
+  ]
+}

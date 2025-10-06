@@ -29,6 +29,7 @@ const nextConfig: NextConfig = {
     ...selectedConfig,
   },
   output: "export",
+  assetPrefix: "/hc/", // 静的用ファイルのパスを変更
   images: {
     unoptimized: true,
   },
