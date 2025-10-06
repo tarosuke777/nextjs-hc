@@ -19,6 +19,7 @@ npm run dev:aws
 ## Not Node.js
 
 npx serve@latest out -c ../serve.json
+https://github.com/vercel/serve
 https://github.com/vercel/serve-handler#options
 
 ## コマンド補足
@@ -29,8 +30,8 @@ package.json を参照
 
 ## ローカル用
 
-docker compose up -d --build nginx
-docker compose down nginx
+docker compose up -d --build hc-nginx
+docker compose down hc-nginx
 
 ## AWS 用
 
