@@ -3,7 +3,7 @@ import { http, HttpResponse, ws } from "msw";
 // const chat = ws.link("ws://localhost:8080");
 
 export const handlers = [
-  http.get(`http://${process.env.API_ORIGIN}/messages`, ({ request }) => {
+  http.get(`http://${process.env.API_ORIGIN}/hc/ap/messages`, ({ request }) => {
     const url = new URL(request.url);
     const channelId = url.searchParams.get("channelId");
 
@@ -41,22 +41,17 @@ export const handlers = [
       ]);
     }
   }),
-  ws
-    .link(`ws://${process.env.API_ORIGIN}/hc-websocket?1`)
-    .addEventListener("connection", ({ client }) => {
-      client.addEventListener("message", (event) => {
-        const data = JSON.parse(event.data as string);
-        const now = new Date();
-        const isoString = now.toISOString();
-        const formattedDate = isoString.replace(
-          "Z",
-          now.getMilliseconds().toString().padEnd(6, "0")
-        );
-        data.createdAt = formattedDate;
-        client.send(JSON.stringify(data));
-      });
-    }),
-  http.get(`http://${process.env.API_ORIGIN}/channels`, () => {
+  ws.link(`ws://${process.env.API_ORIGIN}/hc/ap/hc-websocket?1`).addEventListener("connection", ({ client }) => {
+    client.addEventListener("message", (event) => {
+      const data = JSON.parse(event.data as string);
+      const now = new Date();
+      const isoString = now.toISOString();
+      const formattedDate = isoString.replace("Z", now.getMilliseconds().toString().padEnd(6, "0"));
+      data.createdAt = formattedDate;
+      client.send(JSON.stringify(data));
+    });
+  }),
+  http.get(`http://${process.env.API_ORIGIN}/hc/ap/channels`, () => {
     return HttpResponse.json([
       {
         channelId: "1",

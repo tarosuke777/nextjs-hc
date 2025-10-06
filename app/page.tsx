@@ -72,9 +72,7 @@ export default function Home() {
     fetchMessages();
     fetchChannels();
 
-    const websocket = new WebSocket(
-      `ws://${process.env.API_ORIGIN}/hc-websocket?${channelId}`
-    );
+    const websocket = new WebSocket(`ws://${process.env.API_ORIGIN}/hc/ap/hc-websocket?${channelId}`);
     websocket.addEventListener("error", (event) => {
       console.log("WebSocket error: ", event);
     });
@@ -82,10 +80,7 @@ export default function Home() {
     socketRef.current = websocket;
 
     const onMessage = (message: MessageEvent) => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        JSON.parse(message.data),
-      ]);
+      setMessages((prevMessages) => [...prevMessages, JSON.parse(message.data)]);
     };
 
     websocket.addEventListener("message", onMessage);
@@ -120,10 +115,7 @@ export default function Home() {
         <ul>
           {channels.map((channel) => (
             <li key={channel.channelId} className="mb-2">
-              <Link
-                href={`/?channelId=${channel.channelId}`}
-                className="text-blue-300 hover:text-blue-100"
-              >
+              <Link href={`/?channelId=${channel.channelId}`} className="text-blue-300 hover:text-blue-100">
                 {channel.channelName}
               </Link>
             </li>
@@ -141,16 +133,8 @@ export default function Home() {
             </thead>
             <tbody>
               {messages.map((message, index) => (
-                <tr
-                  key={index}
-                  className="border-b border-gray-700 hover:bg-gray-800"
-                >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {dayjs
-                      .utc(message.createdAt)
-                      .local()
-                      .format("YYYY-MM-DD (ddd) HH:mm:ss ")}
-                  </td>
+                <tr key={index} className="border-b border-gray-700 hover:bg-gray-800">
+                  <td className="px-6 py-4 whitespace-nowrap">{dayjs.utc(message.createdAt).local().format("YYYY-MM-DD (ddd) HH:mm:ss ")}</td>
                   <td className="px-6 py-4">{message.content}</td>
                 </tr>
               ))}
