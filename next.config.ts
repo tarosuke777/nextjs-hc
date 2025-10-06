@@ -23,6 +23,7 @@ switch (backAppEnv) {
 }
 
 const nextConfig: NextConfig = {
+  basePath: "/hc",
   env: {
     BACK_APP_ENV: backAppEnv,
     ...selectedConfig,
@@ -30,6 +31,32 @@ const nextConfig: NextConfig = {
   output: "export",
   images: {
     unoptimized: true,
+  },
+
+  async headers() {
+    return [
+      {
+        // Service Workerのパス
+        source: "/(.*)",
+        headers: [
+          {
+            key: "Service-Worker-Allowed",
+            value: "/",
+          },
+        ],
+      },
+    ];
+  },
+  async redirects() {
+    return [
+      {
+        source: "/", // リダイレクト元のパス（例）
+        destination: "/hc", // リダイレクト先のパス
+        permanent: true, // 恒久的なリダイレクト（308/301）。SEOに有利。一時的な場合は false（307/302）。
+        basePath: false,
+      },
+      // 他のリダイレクトルールもここに追加できます
+    ];
   },
 };
 
