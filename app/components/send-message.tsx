@@ -12,6 +12,7 @@ export default function SendMessage({
   channelIdRef,
 }: SendMessageProps) {
   const contentRef = useRef<HTMLInputElement | null>(null);
+  const selectRef = useRef<HTMLSelectElement | null>(null);
 
   const sendName = () => {
     if (!contentRef.current) return;
@@ -19,6 +20,7 @@ export default function SendMessage({
     const msg = {
       content: contentRef.current.value,
       channelId: channelIdRef.current,
+      to: selectRef.current?.value || "",
     };
 
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
@@ -36,23 +38,26 @@ export default function SendMessage({
   };
 
   return (
-    <div className="flex gap-4 my-5 ml-3">
-      <div className="w-1/3">
-        <input
-          type="text"
-          ref={contentRef}
-          onKeyDown={handleKeyDown}
-          className="px-5 py-2.5 rounded-lg bg-gray-700 text-sm w-full"
-        />
-      </div>
-      <div>
-        <button
-          onClick={sendName}
-          className="px-5 py-2.5 rounded-lg bg-gray-700 text-sm"
-        >
-          Send
-        </button>
-      </div>
+    <div className="flex items-center gap-4 my-5 ml-3">
+      <select
+        ref={selectRef}
+        className="px-5 py-2.5 rounded-lg bg-gray-700 text-sm w-32"
+      >
+        <option value="">選択</option>
+        <option value="AI">AI</option>
+      </select>
+      <input
+        type="text"
+        ref={contentRef}
+        onKeyDown={handleKeyDown}
+        className="px-5 py-2.5 rounded-lg bg-gray-700 text-sm flex-1"
+      />
+      <button
+        onClick={sendName}
+        className="px-5 py-2.5 rounded-lg bg-gray-700 text-sm"
+      >
+        Send
+      </button>
     </div>
   );
 }
