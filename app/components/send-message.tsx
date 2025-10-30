@@ -41,10 +41,12 @@ export default function SendMessage({
     <div className="flex items-center gap-4 my-5 ml-3">
       <select
         ref={selectRef}
-        className="px-5 py-2.5 rounded-lg bg-gray-700 text-sm w-32"
+        className="px-5 py-2.5 rounded-lg bg-gray-700 text-sm w-48"
       >
         <option value="">選択</option>
-        <option value="AI">AI</option>
+        <option value="ai/qwen3:latest">ai/qwen3:latest</option>
+        <option value="ai/qwen3:0.6B-F16">ai/qwen3:0.6B-F16</option>
+        <option value="ai/qwen3:0.6B-Q4_K_M">ai/qwen3:0.6B-Q4_K_M</option>
       </select>
       <input
         type="text"
