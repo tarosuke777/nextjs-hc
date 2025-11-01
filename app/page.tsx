@@ -109,7 +109,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen">
       <aside className="w-40 p-4 bg-gray-800 text-white flex-shrink-0">
         <h2 className="text-lg font-bold mb-4">Channel</h2>
         <ul>
