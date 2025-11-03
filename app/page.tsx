@@ -31,6 +31,21 @@ export default function Home() {
   dayjs.extend(timezone);
   dayjs.locale("ja");
 
+  const groupMessagesByDate = (messages: Message[]) => {
+    if (!messages || messages.length === 0) return {};
+    
+    return messages.reduce((groups, message) => {
+      // 日付をYYYY-MM-DD形式で取得 (ローカルタイムゾーンを使用)
+      // バックエンドから来た日時をUTCとして扱い、ローカルタイムゾーンに変換して日付を決定
+      const dateKey = dayjs.utc(message.createdAt).local().format("YYYY-MM-DD");
+      if (!groups[dateKey]) {
+        groups[dateKey] = [];
+      }
+      groups[dateKey].push(message);
+      return groups;
+    }, {} as Record<string, Message[]>);
+  };
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -104,6 +119,8 @@ export default function Home() {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]); // messagesステートが変更されるたびに実行
+
+  const groupedMessages = groupMessagesByDate(messages);
 
   if (loading) {
     return <p>Loading...</p>;
