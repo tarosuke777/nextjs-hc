@@ -164,7 +164,7 @@ export default function Home() {
         <div className="p-4 bg-gray-800 flex-shrink-0">
           <SendMessage channelIdRef={channelIdRef} socketRef={socketRef} />
         </div>
-      </main>h
+      </main>
     </div>
   );
 }
