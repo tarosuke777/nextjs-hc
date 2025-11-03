@@ -109,7 +109,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-y-hidden">
       <aside className="w-40 p-4 bg-gray-800 text-white flex-shrink-0">
         <h2 className="text-lg font-bold mb-4">Channel</h2>
         <ul>
@@ -150,7 +150,7 @@ export default function Home() {
         <div className="p-4 bg-gray-800 flex-shrink-0">
           <SendMessage channelIdRef={channelIdRef} socketRef={socketRef} />
         </div>
-      </main>
+      </main>h
     </div>
   );
 }

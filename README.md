@@ -37,3 +37,8 @@ docker compose down hc-nginx
 
 docker compose up -d --build nginx-aws
 docker compose down nginx-aws
+
+// https://github.com/mswjs/msw/discussions/1707
+// https://mswjs.io/docs/api/setup-worker/start#findworker
+// https://mswjs.io/docs/recipes/custom-worker-script-location/
+// https://github.com/mswjs/msw/issues/690#issuecomment-849552403
