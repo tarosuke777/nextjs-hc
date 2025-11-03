@@ -31,6 +31,11 @@ export default function Home() {
   dayjs.extend(timezone);
   dayjs.locale("ja");
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   // 初期メッセージとチャンネルの読み込み、WebSocket接続の確立
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -110,7 +115,7 @@ export default function Home() {
 
   return (
     <div className="flex h-screen overflow-y-hidden">
-      <aside className="w-40 p-4 bg-gray-800 text-white flex-shrink-0">
+      <aside className={`w-40 p-4 bg-gray-800 text-white flex-shrink-0 ${isSidebarOpen ? '' : 'hidden'}`}>
         <h2 className="text-lg font-bold mb-4">Channel</h2>
         <ul>
           {channels.map((channel) => (
@@ -123,6 +128,15 @@ export default function Home() {
         </ul>
       </aside>
       <main className="flex-1 flex flex-col bg-gray-900 text-white">
+        <div className="p-4 bg-gray-800 flex-shrink-0 sticky top-0 md:hidden">
+            <button 
+                onClick={toggleSidebar} 
+                className="text-white p-2 rounded-md bg-gray-700 hover:bg-gray-600"
+            >
+                {isSidebarOpen ? '閉じる' : 'チャンネルを開く'}
+            </button>
+        </div>
+
         <div className="flex-1 overflow-y-auto p-4">
           <table className="text-left text-sm w-full table-auto">
             <thead className="text-xs uppercase bg-gray-700 sticky top-0 z-10">
