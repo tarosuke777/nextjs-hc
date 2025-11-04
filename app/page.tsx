@@ -31,7 +31,7 @@ export default function Home() {
   dayjs.extend(timezone);
   dayjs.locale("ja");
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
