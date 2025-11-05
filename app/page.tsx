@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import "dayjs/locale/ja";
+import React from "react"; 
 
 export default function Home() {
   const socketRef = useRef<WebSocket | null>(null);
@@ -156,23 +157,29 @@ export default function Home() {
 
         <div className="flex-1 overflow-y-auto p-4">
           <table className="text-left text-sm w-full table-auto">
-            <thead className="text-xs uppercase bg-gray-700 sticky top-0 z-10">
-              <tr>
-                <th className="px-6 py-3 w-1/40">Time</th>
-                <th className="px-6 py-3 w-1/24">User</th>
-                <th className="px-6 py-3 w-3/4">Message</th>
-              </tr>
-            </thead>
             <tbody>
-              {messages.map((message, index) => (
-                <tr key={index} className="border-b border-gray-700 hover:bg-gray-800">
-                  <td className="px-6 py-4 whitespace-nowrap">{dayjs.utc(message.createdAt).local().format("YYYY-MM-DD (ddd) HH:mm:ss ")}</td>
-                  <td className="px-6 py-4">{message.userId}</td>
-                  <td className="px-6 py-4">{message.content}</td>
-                </tr>
+              {Object.entries(groupedMessages).map(([date, msgs]) => (
+                <React.Fragment key={date}>
+                  <tr className="bg-gray-800 border-b border-gray-700">
+                    <td 
+                      colSpan={3} 
+                      className="px-6 py-2 text-center text-lg font-semibold sticky top-0 z-10 bg-gray-800/90 backdrop-blur-sm"
+                    >
+                      {dayjs(date).format("YYYY年MM月DD日 (ddd)")}
+                    </td>
+                  </tr>
+                  {msgs.map((message, index) => (
+                    // message.messageId が利用可能なら key に使用することが推奨されます
+                    <tr key={index} className="border-b border-gray-700 hover:bg-gray-800">
+                      <td className="px-6 py-4 whitespace-nowrap">{dayjs.utc(message.createdAt).local().format("HH:mm:ss ")}</td>
+                      <td className="px-6 py-4">{message.userId}</td>
+                      <td className="px-6 py-4 w-full">{message.content}</td>
+                    </tr>
+                  ))}
+                </React.Fragment>
               ))}
               <tr ref={messagesEndRef}>
-                <td colSpan={2}></td>
+                <td colSpan={3}></td>
               </tr>
             </tbody>
           </table>
