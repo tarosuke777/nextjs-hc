@@ -1,5 +1,5 @@
 version: "3.8" # Docker Compose のバージョンを指定。通常は最新の安定版でOK。
-
+name: nextjs-hc
 services:
   hc-nginx:
     build:
