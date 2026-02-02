@@ -52,6 +52,20 @@ export default function Home() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const connectWebSocket = () => {
+    const channelId = channelIdRef.current || "1";
+    const websocket = new WebSocket(`ws://${process.env.API_ORIGIN}/hc/ap/hc-websocket?${channelId}`);
+
+    websocket.onmessage = (message) => {
+      setMessages((prev) => [...prev, JSON.parse(message.data)]);
+    };
+
+    websocket.onerror = (err) => console.error("WebSocket Error:", err);
+
+    socketRef.current = websocket;
+    return websocket; // WebSocketインスタンスを返すようにする
+  };
+
   // 初期メッセージとチャンネルの読み込み、WebSocket接続の確立
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -93,23 +107,12 @@ export default function Home() {
     fetchMessages();
     fetchChannels();
 
-    const websocket = new WebSocket(`ws://${process.env.API_ORIGIN}/hc/ap/hc-websocket?${channelId}`);
-    websocket.addEventListener("error", (event) => {
-      console.log("WebSocket error: ", event);
-    });
-
-    socketRef.current = websocket;
-
-    const onMessage = (message: MessageEvent) => {
-      setMessages((prevMessages) => [...prevMessages, JSON.parse(message.data)]);
-    };
-
-    websocket.addEventListener("message", onMessage);
+    // WebSocket接続の確立
+    connectWebSocket();
 
     // クリーンアップ関数: コンポーネントのアンマウント時にWebSocketを閉じる
     return () => {
-      websocket.close();
-      websocket.removeEventListener("message", onMessage);
+      socketRef.current?.close();
     };
   }, [pathname, searchParams]); // pathnameまたはsearchParamsが変更されたときに再実行
 
@@ -186,7 +189,7 @@ export default function Home() {
         </div>
         <hr className="border-gray-700" />
         <div className="p-4 bg-gray-800 flex-shrink-0">
-          <SendMessage channelIdRef={channelIdRef} socketRef={socketRef} />
+          <SendMessage channelIdRef={channelIdRef} socketRef={socketRef} connectWebSocket={connectWebSocket} />
         </div>
       </main>
     </div>
