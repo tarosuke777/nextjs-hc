@@ -38,6 +38,7 @@ export default function SendMessage({
 
   const sendName = async () => {
     if (!contentRef.current || isConnecting) return;
+    if (!contentRef.current.value.trim()) return;
 
     let socket = socketRef.current;
     if (!socket || socket.readyState !== WebSocket.OPEN) {
