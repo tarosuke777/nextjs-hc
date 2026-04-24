@@ -1,9 +1,13 @@
-import Message from "./message";
+import Message from './message';
 
-export default async function GetMessage(channelId: string): Promise<Message[]> {
-  const res = await fetch(`http://${process.env.API_ORIGIN}/hc/ap/messages?channelId=${channelId}`);
+export default async function GetMessage(
+  channelId: string,
+): Promise<Message[]> {
+  const res = await fetch(
+    `http://${process.env.API_ORIGIN}/hc/ap/messages?channelId=${channelId}`,
+  );
   if (!res.ok) {
-    throw new Error("Failed to fetch data");
+    throw new Error('Failed to fetch data');
   }
   return res.json();
 }

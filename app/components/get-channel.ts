@@ -1,9 +1,9 @@
-import Channel from "./channel";
+import Channel from './channel';
 
 export default async function GetChannel(): Promise<Channel[]> {
   const res = await fetch(`http://${process.env.API_ORIGIN}/hc/ap/channels`);
   if (!res.ok) {
-    throw new Error("Failed to fetch data");
+    throw new Error('Failed to fetch data');
   }
   return res.json();
 }

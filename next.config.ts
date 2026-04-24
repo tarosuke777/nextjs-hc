@@ -1,20 +1,20 @@
-import type { NextConfig } from "next";
-import ideConfig from "./config/ide.json";
-import awsConfig from "./config/aws.json";
-import prodConfig from "./config/prod.json";
+import type { NextConfig } from 'next';
+import ideConfig from './config/ide.json';
+import awsConfig from './config/aws.json';
+import prodConfig from './config/prod.json';
 
-const backAppEnv = process.env.BACK_APP_ENV || "mock";
+const backAppEnv = process.env.BACK_APP_ENV || 'mock';
 
 let selectedConfig: Record<string, string>;
 
 switch (backAppEnv) {
-  case "ide":
+  case 'ide':
     selectedConfig = ideConfig;
     break;
-  case "aws":
+  case 'aws':
     selectedConfig = awsConfig;
     break;
-  case "prod":
+  case 'prod':
     selectedConfig = prodConfig;
     break;
   default:
@@ -23,13 +23,13 @@ switch (backAppEnv) {
 }
 
 const nextConfig: NextConfig = {
-  basePath: "/hc",
+  basePath: '/hc',
   env: {
     BACK_APP_ENV: backAppEnv,
     ...selectedConfig,
   },
-  output: "export",
-  assetPrefix: "/hc/", // 静的用ファイルのパスを変更
+  output: 'export',
+  assetPrefix: '/hc/', // 静的用ファイルのパスを変更
   images: {
     unoptimized: true,
   },
@@ -38,11 +38,11 @@ const nextConfig: NextConfig = {
     return [
       {
         // Service Workerのパス
-        source: "/(.*)",
+        source: '/(.*)',
         headers: [
           {
-            key: "Service-Worker-Allowed",
-            value: "/",
+            key: 'Service-Worker-Allowed',
+            value: '/',
           },
         ],
       },
@@ -51,8 +51,8 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: "/", // リダイレクト元のパス（例）
-        destination: "/hc", // リダイレクト先のパス
+        source: '/', // リダイレクト元のパス（例）
+        destination: '/hc', // リダイレクト先のパス
         permanent: true, // 恒久的なリダイレクト（308/301）。SEOに有利。一時的な場合は false（307/302）。
         basePath: false,
       },

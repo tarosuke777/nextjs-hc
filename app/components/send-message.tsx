@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useRef, RefObject, KeyboardEvent, useState } from "react";
+import { useRef, RefObject, KeyboardEvent, useState } from 'react';
 
 interface SendMessageProps {
   socketRef: RefObject<WebSocket | null>;
@@ -30,7 +30,7 @@ export default function SendMessage({
         }
         if (attempts++ > maxAttempts) {
           clearInterval(interval);
-          reject(new Error("WebSocket connection timeout"));
+          reject(new Error('WebSocket connection timeout'));
         }
       }, 500);
     });
@@ -42,16 +42,19 @@ export default function SendMessage({
 
     let socket = socketRef.current;
     if (!socket || socket.readyState !== WebSocket.OPEN) {
-      console.log("WebSocket is closed. Reconnecting...");
+      console.log('WebSocket is closed. Reconnecting...');
       setIsConnecting(true);
 
       try {
         socket = connectWebSocket(); // 再接続実行
-        await waitForOpen(socket);    // OPENになるまで待機
-        console.log("Reconnected successfully.");
+        await waitForOpen(socket); // OPENになるまで待機
+        console.log('Reconnected successfully.');
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "原因不明のエラー";
-        alert(`接続できませんでした (${errorMessage})。しばらく時間を置いてからお試しください。`);
+        const errorMessage =
+          err instanceof Error ? err.message : '原因不明のエラー';
+        alert(
+          `接続できませんでした (${errorMessage})。しばらく時間を置いてからお試しください。`,
+        );
         setIsConnecting(false);
         return;
       }
@@ -61,19 +64,19 @@ export default function SendMessage({
     const msg = {
       content: contentRef.current.value,
       channelId: channelIdRef.current,
-      to: selectRef.current?.value || "",
+      to: selectRef.current?.value || '',
     };
 
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify(msg));
-      contentRef.current.value = "";
+      contentRef.current.value = '';
     } else {
-      console.error("WebSocket is not open. Cannot send message.");
+      console.error('WebSocket is not open. Cannot send message.');
     }
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       sendName();
     }
   };
@@ -93,13 +96,13 @@ export default function SendMessage({
         onKeyDown={handleKeyDown}
         disabled={isConnecting}
         className="px-5 py-2.5 rounded-lg bg-gray-700 text-sm flex-1"
-        placeholder={isConnecting ? "再接続中..." : ""}
+        placeholder={isConnecting ? '再接続中...' : ''}
       />
       <button
         onClick={sendName}
         className="px-5 py-2.5 rounded-lg bg-gray-700 text-sm"
       >
-        {isConnecting ? "Connecting..." : "Send"}
+        {isConnecting ? 'Connecting...' : 'Send'}
       </button>
     </div>
   );
