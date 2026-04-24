@@ -42,3 +42,16 @@ docker compose down nginx-aws
 // https://mswjs.io/docs/api/setup-worker/start#findworker
 // https://mswjs.io/docs/recipes/custom-worker-script-location/
 // https://github.com/mswjs/msw/issues/690#issuecomment-849552403
+
+# Format
+
+npm run format
+
+# コードに潜在的なバグがないか、Next.jsのルールに反していないかを確認
+
+npm run lint
+npm run lint:fix
+
+# セキュリティFIX
+
+npm audit fix
