@@ -61,7 +61,7 @@ export default function Home() {
   const connectWebSocket = () => {
     const channelId = channelIdRef.current || '1';
     const websocket = new WebSocket(
-      `ws://${process.env.API_ORIGIN}/hc/ap/hc-websocket?${channelId}`,
+      `wss://${process.env.API_ORIGIN}/hc/ap/hc-websocket?${channelId}`,
     );
 
     websocket.onmessage = (message) => {

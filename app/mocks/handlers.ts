@@ -42,7 +42,7 @@ export const handlers = [
     }
   }),
   ws
-    .link(`ws://${process.env.API_ORIGIN}/hc/ap/hc-websocket?1`)
+    .link(`wss://${process.env.API_ORIGIN}/hc/ap/hc-websocket?1`)
     .addEventListener('connection', ({ client }) => {
       client.addEventListener('message', (event) => {
         const data = JSON.parse(event.data as string);
