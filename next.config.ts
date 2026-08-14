@@ -23,13 +23,13 @@ switch (backAppEnv) {
 }
 
 const nextConfig: NextConfig = {
-  basePath: '/hc',
+  // basePath: '/hc', // サブドメイン化に伴い、basePathを削除
   env: {
     BACK_APP_ENV: backAppEnv,
     ...selectedConfig,
   },
   output: 'export',
-  assetPrefix: '/hc/', // 静的用ファイルのパスを変更
+  // assetPrefix: '/hc/', // 静的用ファイルのパスを変更 // サブドメイン化に伴い、assetPrefixを削除
   images: {
     unoptimized: true,
   },
@@ -48,17 +48,18 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  async redirects() {
-    return [
-      {
-        source: '/', // リダイレクト元のパス（例）
-        destination: '/hc', // リダイレクト先のパス
-        permanent: true, // 恒久的なリダイレクト（308/301）。SEOに有利。一時的な場合は false（307/302）。
-        basePath: false,
-      },
-      // 他のリダイレクトルールもここに追加できます
-    ];
-  },
+  // サブドメイン化に伴い、リダイレクト設定をコメントアウト
+  // async redirects() {
+  //   return [
+  //     {
+  //       source: '/', // リダイレクト元のパス（例）
+  //       destination: '/hc', // リダイレクト先のパス
+  //       permanent: true, // 恒久的なリダイレクト（308/301）。SEOに有利。一時的な場合は false（307/302）。
+  //       basePath: false,
+  //     },
+  //     // 他のリダイレクトルールもここに追加できます
+  //   ];
+  // },
 };
 
 export default nextConfig;
