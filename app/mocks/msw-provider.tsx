@@ -9,7 +9,7 @@ const mockingEnabledPromise =
     ? import('./browser').then(async ({ worker }) => {
         await worker.start({
           serviceWorker: {
-            url: '/hc/mockServiceWorker.js',
+            url: '/mockServiceWorker.js',
             options: {
               scope: '/',
             },
